@@ -26,6 +26,7 @@ Input/Output Signal Diagram:
 
 
 RTL Code:
+```
 input [3:0] bcd;
      output [6:0] seg;
      reg [6:0] seg;
@@ -46,9 +47,11 @@ input [3:0] bcd;
         endcase
     end
 endmodule
+```
 
 
 TestBench:
+```
 module BCD_to_7seg_tb;
  reg[3:0]bcd_tb;
  wire[6:0]seg_tb;
@@ -74,7 +77,7 @@ module BCD_to_7seg_tb;
     bcd_tb=4'd9;
  end
  endmodule
-
+```
 
 Output waveform:
 <img width="1841" height="1187" alt="Screenshot 2025-09-09 151233" src="https://github.com/user-attachments/assets/d664aabf-cc72-4ada-a02c-bccfbd424af5" />
