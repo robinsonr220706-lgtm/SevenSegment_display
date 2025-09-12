@@ -20,67 +20,68 @@ Generate Simulation Report Once the simulation is complete, you can generate a s
 Save and Document Results Save your project by clicking File → Save Project. Take screenshots of the waveform window and include them in your lab report to document your results. You can include the timing diagram from the simulation window showing the correct functionality of the Seven Segment across different select inputs and data inputs.
 Close the Simulation Once done, by going to Simulation → "Close Simulation
 
-Input/Output Signal Diagram:
-<img width="706" height="443" alt="image" src="https://github.com/user-attachments/assets/bf43b303-d2af-4142-af25-b9917eab7898" />
+Input/Output Signal Diagram: ![WhatsApp Image 2025-09-12 at 11 14 32_f8158452](https://github.com/user-attachments/assets/4579b858-310d-41e6-b068-ac66e25bd605)
 
 
 
 RTL Code:
-```
-input [3:0] bcd;
-     output [6:0] seg;
-     reg [6:0] seg;
-    always @(bcd)
+`timescale 1ns / 1ps
+
+module seven_segment (
+    input [3:0] data_in,
+    output reg [6:0] segments_out
+    );
+
+    // segments_out maps to {g,f,e,d,c,b,a}
+    always @(*)
     begin
-        case (bcd)
-            0 : seg = 7'b0000001;
-            1 : seg = 7'b1001111;
-            2 : seg = 7'b0010010;
-            3 : seg = 7'b0000110;
-            4 : seg = 7'b1001100;
-            5 : seg = 7'b0100100;
-            6 : seg = 7'b0100000;
-            7 : seg = 7'b0001111;
-            8 : seg = 7'b0000000;
-            9 : seg = 7'b0000100;
-            default : seg = 7'b1111111; 
+        case (data_in)
+            4'd0: segments_out = 7'b1000000; // 0
+            4'd1: segments_out = 7'b1111001; // 1
+            4'd2: segments_out = 7'b0100100; // 2
+            4'd3: segments_out = 7'b0110000; // 3
+            4'd4: segments_out = 7'b0011001; // 4
+            4'd5: segments_out = 7'b0010010; // 5
+            4'd6: segments_out = 7'b0000010; // 6
+            4'd7: segments_out = 7'b1111000; // 7
+            4'd8: segments_out = 7'b0000000; // 8
+            4'd9: segments_out = 7'b0010000; // 9
+            default: segments_out = 7'b1111111; // Off
         endcase
     end
-endmodule
-```
 
+endmodule
 
 TestBench:
-```
-module BCD_to_7seg_tb;
- reg[3:0]bcd_tb;
- wire[6:0]seg_tb;
- BCD_to_7seg dut(.bcd(bcd_tb),.seg(seg_tb));
- initial
- begin
-    bcd_tb=4'd0;
- #100
-    bcd_tb=4'd1;
- #100
-    bcd_tb=4'd2;
- #100
-    bcd_tb=4'd3;
- #100
-    bcd_tb=4'd4;
- #100
-    bcd_tb=4'd5;
- #100
-    bcd_tb=4'd7;
- #100
-    bcd_tb=4'd8;
- #100
-    bcd_tb=4'd9;
- end
- endmodule
-```
+`timescale 1ns / 1ps
 
-Output waveform:
-<img width="1841" height="1187" alt="Screenshot 2025-09-09 151233" src="https://github.com/user-attachments/assets/d664aabf-cc72-4ada-a02c-bccfbd424af5" />
+module seven_segment_tb;
+
+    reg [3:0] tb_data_in;
+    wire [6:0] tb_segments_out;
+
+    seven_segment dut (
+        .data_in(tb_data_in),
+        .segments_out(tb_segments_out)
+    );
+
+    initial begin
+        tb_data_in = 4'd0;
+
+        // Loop to test all 16 possible inputs
+        repeat (16) begin
+            #10;
+            tb_data_in = tb_data_in + 1;
+        end
+
+        #20;
+        $finish;
+    end
+
+endmodule
+
+Output waveform: ![WhatsApp Image 2025-09-12 at 11 14 34_ea910055](https://github.com/user-attachments/assets/ce3a6724-d6ab-4d84-a0e2-b053032c3c8d)
+
 
 Conclusion:
 The BCD to 7-segment display decoder is an essential digital circuit that converts binary coded decimal inputs into signals that can drive a 7-segment display. It helps in representing numeric data in a human-readable form. This system is widely used in digital clocks, calculators, electronic meters, and other display devices. By simplifying the conversion process from binary to decimal digits, the BCD to 7-segment display improves efficiency and accuracy in digital systems.
